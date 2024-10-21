@@ -1,39 +1,45 @@
+DENSE_RANK() OVER (PARTITION BY PUB_ID ORDER BY PRICE) AS ìˆœìœ„,
+ALTER VIEW ì„±ì VIEW WITH ENCRYPTION
+WHERE ì ìˆ˜ >= 80
+WITH CHECK OPTION
+	
+	
 USE SampleDB
--- 1. ´ÙÀ½ Å×ÀÌºíÀ» ±â¹ÝÀ¸·Î ÇÇ¹þ°á°ú¸¦ ¸¸µé±â À§ÇÑ ±¸¹®À» ÀÛ¼ºÇÏ¼¼¿ä. 
+-- 1. ë‹¤ìŒ í…Œì´ë¸”ì„ ê¸°ë°˜ìœ¼ë¡œ í”¼ë²—ê²°ê³¼ë¥¼ ë§Œë“¤ê¸° ìœ„í•œ êµ¬ë¬¸ì„ ìž‘ì„±í•˜ì„¸ìš”. 
 create table #pvt
-(Â÷Á¾ char(20), ºÐ±â char(20), ÆÇ¸Å·® int)
-insert into #pvt values('°æÂ÷','1ºÐ±â',27),('°æÂ÷','2ºÐ±â',46),('°æÂ÷','3ºÐ±â',50),('°æÂ÷','4ºÐ±â',34),
-('ÁßÇüÂ÷','1ºÐ±â',32),('ÁßÇüÂ÷','2ºÐ±â',38),('ÁßÇüÂ÷','3ºÐ±â',29),('ÁßÇüÂ÷','4ºÐ±â',27)
+(ì°¨ì¢… char(20), ë¶„ê¸° char(20), íŒë§¤ëŸ‰ int)
+insert into #pvt values('ê²½ì°¨','1ë¶„ê¸°',27),('ê²½ì°¨','2ë¶„ê¸°',46),('ê²½ì°¨','3ë¶„ê¸°',50),('ê²½ì°¨','4ë¶„ê¸°',34),
+('ì¤‘í˜•ì°¨','1ë¶„ê¸°',32),('ì¤‘í˜•ì°¨','2ë¶„ê¸°',38),('ì¤‘í˜•ì°¨','3ë¶„ê¸°',29),('ì¤‘í˜•ì°¨','4ë¶„ê¸°',27)
 select * from #pvt
 
 SELECT *
 FROM #pvt
-PIVOT (SUM(ÆÇ¸Å·®) FOR ºÐ±â IN("1ºÐ±â", "2ºÐ±â", "3ºÐ±â", "4ºÐ±â")) AS PVT 
+PIVOT (SUM(íŒë§¤ëŸ‰) FOR ë¶„ê¸° IN("1ë¶„ê¸°", "2ë¶„ê¸°", "3ë¶„ê¸°", "4ë¶„ê¸°")) AS PVT 
 
--- 2. ¹®Á¦1ÀÇ ÇÇ¹þ°á°ú¸¦ ¾ðÇÇ¹þÇÏ¼¼¿ä.
+-- 2. ë¬¸ì œ1ì˜ í”¼ë²—ê²°ê³¼ë¥¼ ì–¸í”¼ë²—í•˜ì„¸ìš”.
 SELECT * INTO #UNPVT
 FROM #pvt
-PIVOT (SUM(ÆÇ¸Å·®) FOR ºÐ±â IN("1ºÐ±â", "2ºÐ±â", "3ºÐ±â", "4ºÐ±â")) AS PVT 
+PIVOT (SUM(íŒë§¤ëŸ‰) FOR ë¶„ê¸° IN("1ë¶„ê¸°", "2ë¶„ê¸°", "3ë¶„ê¸°", "4ë¶„ê¸°")) AS PVT 
 
-SELECT Â÷Á¾, ºÐ±â, ÆÇ¸Å·®
+SELECT ì°¨ì¢…, ë¶„ê¸°, íŒë§¤ëŸ‰
 FROM #UNPVT
-UNPIVOT(ÆÇ¸Å·® FOR ºÐ±â IN("1ºÐ±â", "2ºÐ±â", "3ºÐ±â", "4ºÐ±â")) AS UNPVT 
+UNPIVOT(íŒë§¤ëŸ‰ FOR ë¶„ê¸° IN("1ë¶„ê¸°", "2ë¶„ê¸°", "3ë¶„ê¸°", "4ë¶„ê¸°")) AS UNPVT 
 
 
--- 3. Á¦Ç° Å×ÀÌºí¿¡¼­ °¡°ÝÀÌ 5¸¸¿ø~10¸¸¿ø»çÀÌÀÇ Á¦Ç°µé¸¸ Ãâ·ÂÇÏ´Â ºä¸¦ »ý¼ºÇÏ°í »ý¼ºµÈ ºä¸¦ Ãâ·ÂÇÏ´Â ±¸¹®À» ÀÛ¼ºÇÏ¼¼¿ä. 
-SELECT * FROM Á¦Ç°
+-- 3. ì œí’ˆ í…Œì´ë¸”ì—ì„œ ê°€ê²©ì´ 5ë§Œì›~10ë§Œì›ì‚¬ì´ì˜ ì œí’ˆë“¤ë§Œ ì¶œë ¥í•˜ëŠ” ë·°ë¥¼ ìƒì„±í•˜ê³  ìƒì„±ëœ ë·°ë¥¼ ì¶œë ¥í•˜ëŠ” êµ¬ë¬¸ì„ ìž‘ì„±í•˜ì„¸ìš”. 
+SELECT * FROM ì œí’ˆ
 
 CREATE VIEW V1
 AS
 SELECT *
-FROM Á¦Ç°
-WHERE °¡°Ý BETWEEN 50000 AND 100000
+FROM ì œí’ˆ
+WHERE ê°€ê²© BETWEEN 50000 AND 100000
 
--- ½ÇÇà
+-- ì‹¤í–‰
 SELECT * FROM V1
 
 
--- 4-1. 1~100±îÁö Á¤¼ö Áß È¦¼öÀÇ ÇÕÀ» ±¸ÇÏ¿© Ãâ·ÂÇÏ¼¼¿ä. (while¹® »ç¿ë)
+-- 4-1. 1~100ê¹Œì§€ ì •ìˆ˜ ì¤‘ í™€ìˆ˜ì˜ í•©ì„ êµ¬í•˜ì—¬ ì¶œë ¥í•˜ì„¸ìš”. (whileë¬¸ ì‚¬ìš©)
 DECLARE @i INT = 1, @sum INT = 0
 
 WHILE (@i <= 100)
@@ -42,56 +48,56 @@ BEGIN
 	   SET @sum+=@i
 	SET @i+=1
 END
-SELECT @sum 'ÃÑÇÕ°è'
+SELECT @sum 'ì´í•©ê³„'
 
 
--- 5-1. Á¦Ç°Å×ÀÌºí¿¡¼­ ÇÑ °³ ·¹ÄÚµå¾¿À» ÀÐ¾î »ö»óÀÌ ¡®WHITE¡¯ÀÎ Á¦Ç°µéÀ» Ãâ·ÂÇÏ¼¼¿ä. (while¹® »ç¿ë)
-SELECT * FROM Á¦Ç°
+-- 5-1. ì œí’ˆí…Œì´ë¸”ì—ì„œ í•œ ê°œ ë ˆì½”ë“œì”©ì„ ì½ì–´ ìƒ‰ìƒì´ â€˜WHITEâ€™ì¸ ì œí’ˆë“¤ì„ ì¶œë ¥í•˜ì„¸ìš”. (whileë¬¸ ì‚¬ìš©)
+SELECT * FROM ì œí’ˆ
 DECLARE @k INT = 1
 
 WHILE @k <= 12
 BEGIN
-    IF(SELECT »ö»ó FROM Á¦Ç° WHERE Á¦Ç°¹øÈ£ = @k)='WHITE'
-      SELECT * FROM Á¦Ç° WHERE Á¦Ç°¹øÈ£ = @k
+    IF(SELECT ìƒ‰ìƒ FROM ì œí’ˆ WHERE ì œí’ˆë²ˆí˜¸ = @k)='WHITE'
+      SELECT * FROM ì œí’ˆ WHERE ì œí’ˆë²ˆí˜¸ = @k
     SET @k+=1
 END
--------------------------------------------¿©±â±îÁö ¼ö¾÷¿¡¼­ ÁøÇà. ¾Æ·¡ ³»¿ë Å¬¶ó½æ¿¡¼­ È®ÀÎÇÏ±â
--- 6-1. ÆÀÀåÇöÈ²Å×ÀÌºí¿¡¼­ »ç¿ø¸í°ú ¾÷¹«¸¦ Ãâ·ÂÇÏ´Â ÇÁ·Î½ÃÀú #p1°ú ÇÁ·Î½ÃÀú ½ÇÇà¹® ÀÛ¼º
+-------------------------------------------ì—¬ê¸°ê¹Œì§€ ìˆ˜ì—…ì—ì„œ ì§„í–‰. ì•„ëž˜ ë‚´ìš© í´ë¼ì¸ì—ì„œ í™•ì¸í•˜ê¸°
+-- 6-1. íŒ€ìž¥í˜„í™©í…Œì´ë¸”ì—ì„œ ì‚¬ì›ëª…ê³¼ ì—…ë¬´ë¥¼ ì¶œë ¥í•˜ëŠ” í”„ë¡œì‹œì € #p1ê³¼ í”„ë¡œì‹œì € ì‹¤í–‰ë¬¸ ìž‘ì„±
 CREATE PROC #p1
 AS
-SELECT »ç¿ø¸í, ¾÷¹«
-FROM ÆÀÀåÇöÈ²
+SELECT ì‚¬ì›ëª…, ì—…ë¬´
+FROM íŒ€ìž¥í˜„í™©
 
--- 6-2. ÆÀÀåÇöÈ²Å×ÀÌºí¿¡¼­ »ç¿ø¸íÀ» ¸Å°³º¯¼ö·Î »ç¿ø¸íÀÇ ¾÷¹«¸¦ Ãâ·ÂÇÏ´Â ÇÁ·Î½ÃÀú¿Í ÇÁ·Î½ÃÀú ½ÇÇà¹® ÀÛ¼º
+-- 6-2. íŒ€ìž¥í˜„í™©í…Œì´ë¸”ì—ì„œ ì‚¬ì›ëª…ì„ ë§¤ê°œë³€ìˆ˜ë¡œ ì‚¬ì›ëª…ì˜ ì—…ë¬´ë¥¼ ì¶œë ¥í•˜ëŠ” í”„ë¡œì‹œì €ì™€ í”„ë¡œì‹œì € ì‹¤í–‰ë¬¸ ìž‘ì„±
 CREATE PROC #p2
-  @»ç¿ø¸í VARCHAR(100)
+  @ì‚¬ì›ëª… VARCHAR(100)
 AS
-SELECT ¾÷¹«
-FROM ÆÀÀåÇöÈ²
-WHERE »ç¿ø¸í = @»ç¿ø¸í
+SELECT ì—…ë¬´
+FROM íŒ€ìž¥í˜„í™©
+WHERE ì‚¬ì›ëª… = @ì‚¬ì›ëª…
 
-EXEC #p2 '¸¶µ¿¼®'
+EXEC #p2 'ë§ˆë™ì„'
 
--- 7. ÆÀÀåÇöÈ²Å×ÀÌºí¿¡¼­ »ç¿ø¸íÀ» ¸Å°³º¯¼ö·Î »ç¿ø¸íÀÇ ¾÷¹«¸¦ output¸Å°³º¯¼ö·Î ¹Þ¾Æ ³»´Â ÇÁ·Î½ÃÀú¿Í. ÇÁ·Î½ÃÀú ½ÇÇà¹® ÀÛ¼º
+-- 7. íŒ€ìž¥í˜„í™©í…Œì´ë¸”ì—ì„œ ì‚¬ì›ëª…ì„ ë§¤ê°œë³€ìˆ˜ë¡œ ì‚¬ì›ëª…ì˜ ì—…ë¬´ë¥¼ outputë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì•„ ë‚´ëŠ” í”„ë¡œì‹œì €ì™€. í”„ë¡œì‹œì € ì‹¤í–‰ë¬¸ ìž‘ì„±
 CREATE PROC #p3
-  @»ç¿ø¸í VARCHAR(100), @¾÷¹« VARCHAR(100) OUTPUT
+  @ì‚¬ì›ëª… VARCHAR(100), @ì—…ë¬´ VARCHAR(100) OUTPUT
 AS
-SELECT @¾÷¹«=¾÷¹«
-FROM ÆÀÀåÇöÈ²
-WHERE »ç¿ø¸í = @»ç¿ø¸í
+SELECT @ì—…ë¬´=ì—…ë¬´
+FROM íŒ€ìž¥í˜„í™©
+WHERE ì‚¬ì›ëª… = @ì‚¬ì›ëª…
 
-DECLARE @¾÷¹« VARCHAR(100)
-EXEC #p3 '¸¶µ¿¼®', @¾÷¹« OUTPUT
-SELECT @¾÷¹«
+DECLARE @ì—…ë¬´ VARCHAR(100)
+EXEC #p3 'ë§ˆë™ì„', @ì—…ë¬´ OUTPUT
+SELECT @ì—…ë¬´
 
--- 8. ÆÀÀåÇöÈ²Å×ÀÌºí¿¡¼­ ¾÷¹«¸íÀ» ¸Å°³º¯¼ö·Î ÇÏ¿© ÇØ´ç ¾÷¹«¸¦ ÇÏ´Â »ç¿øÀÇ ÀÎ¿ø¼ö¸¦ return °ªÀ¸·Î ¹ÝÈ¯ÇÏ´Â ÇÁ·Î½ÃÀú¿Í ÇÁ·Î½ÃÀú ½ÇÇà¹®µµ ÀÛ¼ºÇÏ¼¼¿ä.
+-- 8. íŒ€ìž¥í˜„í™©í…Œì´ë¸”ì—ì„œ ì—…ë¬´ëª…ì„ ë§¤ê°œë³€ìˆ˜ë¡œ í•˜ì—¬ í•´ë‹¹ ì—…ë¬´ë¥¼ í•˜ëŠ” ì‚¬ì›ì˜ ì¸ì›ìˆ˜ë¥¼ return ê°’ìœ¼ë¡œ ë°˜í™˜í•˜ëŠ” í”„ë¡œì‹œì €ì™€ í”„ë¡œì‹œì € ì‹¤í–‰ë¬¸ë„ ìž‘ì„±í•˜ì„¸ìš”.
 CREATE PROC #p3
-  @»ç¿ø¸í VARCHAR(100), @¾÷¹« VARCHAR(100) OUTPUT
+  @ì‚¬ì›ëª… VARCHAR(100), @ì—…ë¬´ VARCHAR(100) OUTPUT
 AS
-SELECT @¾÷¹«=¾÷¹«
-FROM ÆÀÀåÇöÈ²
-WHERE »ç¿ø¸í = @»ç¿ø¸í
+SELECT @ì—…ë¬´=ì—…ë¬´
+FROM íŒ€ìž¥í˜„í™©
+WHERE ì‚¬ì›ëª… = @ì‚¬ì›ëª…
 
-DECLARE @¾÷¹« VARCHAR(100)
-EXEC #p3 '¸¶µ¿¼®', @¾÷¹« OUTPUT
-SELECT @¾÷¹«
+DECLARE @ì—…ë¬´ VARCHAR(100)
+EXEC #p3 'ë§ˆë™ì„', @ì—…ë¬´ OUTPUT
+SELECT @ì—…ë¬´
