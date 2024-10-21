@@ -1,7 +1,38 @@
 DENSE_RANK() OVER (PARTITION BY PUB_ID ORDER BY PRICE) AS 순위,
+
 ALTER VIEW 성적VIEW WITH ENCRYPTION
+
 WHERE 점수 >= 80
 WITH CHECK OPTION
+
+DECLARE @b INT = 1
+DECLARE @sql2 VARCHAR(100)
+WHILE @b <=20
+BEGIN
+	SET @sql2 = 'CREATE TABLE a' + CONVERT(VARCHAR,@b) + '(ID INT)'
+	EXEC(@sql2)
+	SELECT @sql2
+	SET @b += 1
+END
+
+COALESCE(a, b, c, d)
+TRY CATCH
+sp_depends
+sp_helptext
+
+ALTER PROC #p3
+  @종류 VARCHAR(100)
+AS
+DECLARE @개수 INT
+  SELECT @개수 = COUNT(종류) /***중요***/
+  FROM 제품
+  WHERE 종류 = @종류
+RETURN @개수
+
+DECLARE @A INT
+EXEC @A = #p3 '코트'
+SELECT @A
+	-----
 	
 	
 USE SampleDB
