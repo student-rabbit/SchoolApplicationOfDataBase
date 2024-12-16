@@ -50,65 +50,69 @@
 
 
 CREATE TRIGGER SCORE
-ON ¼ºÀû1
+ON ì„±ì 1
 AFTER INSERT
 BEGIN
- UPDATE ¼ºÀû1
- SET ÃÑÁ¡ = (SELECT ¿µ¾î + ¼öÇÐ + ±¹¾î FROM INSERTED) , Æò±Õ (SELECT (¿µ¾î + ¼öÇÐ + ±¹¾î) / 3.0 FROM INSERTED)
- WHERE ÇÐ¹ø = (SELECT ÇÐ¹ø FROM INSERTED)
- SELECT 'ÃÑ±Ý¾×' + CONVERT(VARCHAR, SUM(°¡°Ý))
+ UPDATE ì„±ì 1
+ SET ì´ì  = (SELECT ì˜ì–´ + ìˆ˜í•™ + êµ­ì–´ FROM INSERTED) , í‰ê·  (SELECT (ì˜ì–´ + ìˆ˜í•™ + êµ­ì–´) / 3.0 FROM INSERTED)
+ WHERE í•™ë²ˆ = (SELECT í•™ë²ˆ FROM INSERTED)
+ SELECT 'ì´ê¸ˆì•¡' + CONVERT(VARCHAR, SUM(ê°€ê²©))
 END
 
-CREATE FUNCTION FN_Ã¥°¡°Ý(@Ã¥Á¦¸ñ VARCHAR(30))
+CREATE FUNCTION FN_ì±…ê°€ê²©(@ì±…ì œëª© VARCHAR(30))
 RETURNS INT
 AS
 BEGIN
-RETURN(SELECT °¡°Ý Ã¥ÀÇ°¡°Ý FROM Ã¥ WHERE Ã¥Á¦¸ñ = @Ã¥Á¦¸ñ)
+RETURN(SELECT ê°€ê²© ì±…ì˜ê°€ê²© FROM ì±… WHERE ì±…ì œëª© = @ì±…ì œëª©)
 END
 
-SELECT DBO.FN_Ã¥°¡°Ý('ÆÄ½ºÅ¸¿ä¸®') Ã¥ÀÇ°¡°Ý
+SELECT DBO.FN_ì±…ê°€ê²©('íŒŒìŠ¤íƒ€ìš”ë¦¬') ì±…ì˜ê°€ê²©
 
-CREATE FUNCTION FN_Ã¥LIST1(@°¡°Ý1 INT, @°¡°Ý2 INT)
+CREATE FUNCTION FN_ì±…LIST1(@ê°€ê²©1 INT, @ê°€ê²©2 INT)
 RETURNS TABLE
 AS
-  RETURN(SELECT Ã¥Á¦¸ñ, ºÐ¾ß, °¡°Ý FROM Ã¥ WHERE °¡°Ý BETWEEN @°¡°Ý1 AND @°¡°Ý2)
+  RETURN(SELECT ì±…ì œëª©, ë¶„ì•¼, ê°€ê²© FROM ì±… WHERE ê°€ê²© BETWEEN @ê°€ê²©1 AND @ê°€ê²©2)
 
-SELECT * FROM DBO.FN_Ã¥LIST1(7000,10000)
+SELECT * FROM DBO.FN_ì±…LIST1(7000,10000)
 
-CREATE FUNCTION FN_Ã¥LIST2(@°¡°Ý1 INT, @°¡°Ý2 INT)
-RETURNS @Ã¥ TABLE
-(Ã¥Á¦¸ñ VARCHAR(40), ºÐ¾ß VARCHAR(40), °¡°Ý INT)
+CREATE FUNCTION FN_ì±…LIST2(@ê°€ê²©1 INT, @ê°€ê²©2 INT)
+RETURNS @ì±… TABLE
+(ì±…ì œëª© VARCHAR(40), ë¶„ì•¼ VARCHAR(40), ê°€ê²© INT)
 AS
 BEGIN
- INSERT INTO @Ã¥
- SELECT Ã¥Á¦¸ñ, ºÐ¾ß, °¡°Ý FROM Ã¥ WHERE °¡°Ý BETWEEN @°¡°Ý1 AND @°¡°Ý2
+ INSERT INTO @ì±…
+ SELECT ì±…ì œëª©, ë¶„ì•¼, ê°€ê²© FROM ì±… WHERE ê°€ê²© BETWEEN @ê°€ê²©1 AND @ê°€ê²©2
  RETURN
 END
+
+create, alter, drop, load, restore, database
+load, restore log
+reconfigure
 
 WITH SCHEMABINDING
 WITH ENCRYPTION
 
 DECLARE S_TEST CURSOR FOR
-SELECT * FROM Àå¹Ù±¸´Ï WHERE ±¸¸Å·® > 5 OR ±¸¸ÅÃÑ¾× > 100000
+SELECT * FROM ìž¥ë°”êµ¬ë‹ˆ WHERE êµ¬ë§¤ëŸ‰ > 5 OR êµ¬ë§¤ì´ì•¡ > 100000
 
 OPEN S_TEST
 
-DECLARE @±¸¸Å¹øÈ£ INT, @±¸¸ÅÁ¦Ç° INT, @±¸¸Å·® INT, @±¸¸ÅÃÑ¾× INT
+DECLARE @êµ¬ë§¤ë²ˆí˜¸ INT, @êµ¬ë§¤ì œí’ˆ INT, @êµ¬ë§¤ëŸ‰ INT, @êµ¬ë§¤ì´ì•¡ INT
 
 FETCH NEXT FROM S_TEST
-INTO @±¸¸Å¹øÈ£, @±¸¸ÅÁ¦Ç°, @±¸¸Å·®, @±¸¸ÅÃÑ¾×
+INTO @êµ¬ë§¤ë²ˆí˜¸, @êµ¬ë§¤ì œí’ˆ, @êµ¬ë§¤ëŸ‰, @êµ¬ë§¤ì´ì•¡
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
- IF(@±¸¸ÅÃÑ¾× >= 10000)
-  INSERT INTO #±¸¸ÅÃÑÆò VALUES(@±¸¸Å¹øÈ£, @±¸¸ÅÁ¦Ç°, @±¸¸Å·®, @±¸¸ÅÃÑ¾×*0.9), '±¸¸Å·¢ ¿ì¼ö(ÇÒÀÎÀû¿ë)')
- IF(@±¸¸Å·® >= 5)
-  INSERT INTO #±¸¸ÅÃÑÆò VALUES(@±¸¸Å¹øÈ£, @±¸¸ÅÁ¦Ç°, @±¸¸Å·®, @±¸¸ÅÃÑ¾×), '±¸¸Å·® ¿ì¼ö')
-  FETCH NEXT FROM S_TEST INTO @±¸¸Å¹øÈ£, @±¸¸ÅÁ¦Ç°, @±¸¸Å·®, @±¸¸ÅÃÑ¾×
+ IF(@êµ¬ë§¤ì´ì•¡ >= 10000)
+  INSERT INTO #êµ¬ë§¤ì´í‰ VALUES(@êµ¬ë§¤ë²ˆí˜¸, @êµ¬ë§¤ì œí’ˆ, @êµ¬ë§¤ëŸ‰, @êµ¬ë§¤ì´ì•¡*0.9), 'êµ¬ë§¤ëž™ ìš°ìˆ˜(í• ì¸ì ìš©)')
+ IF(@êµ¬ë§¤ëŸ‰ >= 5)
+  INSERT INTO #êµ¬ë§¤ì´í‰ VALUES(@êµ¬ë§¤ë²ˆí˜¸, @êµ¬ë§¤ì œí’ˆ, @êµ¬ë§¤ëŸ‰, @êµ¬ë§¤ì´ì•¡), 'êµ¬ë§¤ëŸ‰ ìš°ìˆ˜')
+  FETCH NEXT FROM S_TEST INTO @êµ¬ë§¤ë²ˆí˜¸, @êµ¬ë§¤ì œí’ˆ, @êµ¬ë§¤ëŸ‰, @êµ¬ë§¤ì´ì•¡
 END
 
 CLOSE S_TEST
 
 DEALLOCATE S_TEST
 
-SELECT * FROM #±¸¸ÅÃÑÆò
+SELECT * FROM #êµ¬ë§¤ì´í‰
